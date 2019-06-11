@@ -1,0 +1,69 @@
+
+- nodeset:
+    name: debian9-vm
+    nodes:
+      - label: debian9-vm
+        name: test-node
+
+- nodeset:
+    name: runc-debian-buster
+    nodes:
+      - label: runc-debian-buster
+        name: test-node
+
+- nodeset:
+    name: runc-debian-stretch
+    nodes:
+      - label: runc-debian-stretch
+        name: test-node
+
+- job:
+    name: tox-integration
+    parent: tox
+    description: |
+      Run integration tests.
+
+      Uses tox with the ``integration`` environment.
+    vars:
+      tox_envlist: integration
+
+
+- project-template:
+    name: wazo-python3
+    description: Project template for wazo python3 projects
+    check:
+      jobs:
+        - tox-linters:
+            nodeset: runc-debian-buster
+        - tox-py35:
+            nodeset: runc-debian-stretch
+        - tox-integration:
+            nodeset: debian9-vm
+    gate:
+      jobs:
+        - tox-linters:
+            nodeset: runc-debian-buster
+        - tox-py35:
+            nodeset: runc-debian-stretch
+        - tox-integration:
+            nodeset: debian9-vm
+
+- project-template:
+    name: wazo-python2
+    description: Project template for wazo python2 projects
+    check:
+      jobs:
+        - tox-linters:
+            nodeset: runc-debian-buster
+        - tox-py27:
+            nodeset: runc-debian-stretch
+        - tox-integration:
+            nodeset: debian9-vm
+    gate:
+      jobs:
+        - tox-linters:
+            nodeset: runc-debian-buster
+        - tox-py27:
+            nodeset: runc-debian-stretch
+        - tox-integration:
+            nodeset: debian9-vm
