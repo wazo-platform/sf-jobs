@@ -24,8 +24,10 @@
       Run integration tests.
 
       Uses tox with the ``integration`` environment.
+    run: playbooks/tox-integration/run.yaml
     vars:
       tox_envlist: integration
+      docker_compose_services_override: []
 
 
 - project-template:
