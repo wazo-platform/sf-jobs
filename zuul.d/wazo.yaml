@@ -41,8 +41,20 @@
 
 
 - project-template:
+    name: wazo-py37
+    description: Project template for tox -e py37
+    check:
+      jobs:
+        - tox-py37:
+            nodeset: runc-debian-stretch
+    gate:
+      jobs:
+        - tox-py37:
+            nodeset: runc-debian-stretch
+
+- project-template:
     name: wazo-py35
-    description: Project template for wazo python3 projects
+    description: Project template for tox -e py35
     check:
       jobs:
         - tox-py35:
@@ -51,12 +63,10 @@
       jobs:
         - tox-py35:
             nodeset: runc-debian-stretch
-        - tox-integration:
-            nodeset: debian9-vm
 
 - project-template:
     name: wazo-linters
-    description: Project template for wazo python3 projects
+    description: Project template for tox -e linters
     check:
       jobs:
         - tox-linters:
@@ -68,7 +78,7 @@
 
 - project-template:
     name: wazo-py27
-    description: Project template for wazo python2 projects
+    description: Project template for tox -e py27
     check:
       jobs:
         - tox-py27:
@@ -80,7 +90,7 @@
 
 - project-template:
     name: wazo-integration
-    description: Project template for wazo python2 projects
+    description: Project template for tox -e integration
     check:
       jobs:
         - tox-integration:
@@ -92,7 +102,7 @@
 
 - project-template:
     name: wazo-integration-standalone
-    description: Project template for wazo python2 projects
+    description: Project template for tox -e integration, but without depends-on enabled
     check:
       jobs:
         - tox-integration-standalone:
