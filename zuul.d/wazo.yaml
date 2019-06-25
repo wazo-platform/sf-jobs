@@ -41,42 +41,52 @@
 
 
 - project-template:
-    name: wazo-python3
+    name: wazo-py35
     description: Project template for wazo python3 projects
     check:
       jobs:
-        - tox-linters:
-            nodeset: runc-debian-buster
         - tox-py35:
             nodeset: runc-debian-stretch
-        - tox-integration:
-            nodeset: debian9-vm
     gate:
       jobs:
-        - tox-linters:
-            nodeset: runc-debian-buster
         - tox-py35:
             nodeset: runc-debian-stretch
         - tox-integration:
             nodeset: debian9-vm
 
 - project-template:
-    name: wazo-python2
-    description: Project template for wazo python2 projects
+    name: wazo-linters
+    description: Project template for wazo python3 projects
     check:
       jobs:
         - tox-linters:
             nodeset: runc-debian-buster
-        - tox-py27:
-            nodeset: runc-debian-stretch
-        - tox-integration:
-            nodeset: debian9-vm
     gate:
       jobs:
         - tox-linters:
             nodeset: runc-debian-buster
+
+- project-template:
+    name: wazo-py27
+    description: Project template for wazo python2 projects
+    check:
+      jobs:
         - tox-py27:
             nodeset: runc-debian-stretch
+    gate:
+      jobs:
+        - tox-py27:
+            nodeset: runc-debian-stretch
+
+- project-template:
+    name: wazo-integration
+    description: Project template for wazo python2 projects
+    check:
+      jobs:
+        - tox-integration:
+            nodeset: debian9-vm
+    gate:
+      jobs:
         - tox-integration:
             nodeset: debian9-vm
 
