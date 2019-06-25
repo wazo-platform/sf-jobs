@@ -91,21 +91,13 @@
             nodeset: debian9-vm
 
 - project-template:
-    name: wazo-python3-standalone
-    description: Project template for wazo python3 projects
+    name: wazo-integration-standalone
+    description: Project template for wazo python2 projects
     check:
       jobs:
-        - tox-linters:
-            nodeset: runc-debian-buster
-        - tox-py35:
-            nodeset: runc-debian-stretch
         - tox-integration-standalone:
             nodeset: debian9-vm
     gate:
       jobs:
-        - tox-linters:
-            nodeset: runc-debian-buster
-        - tox-py35:
-            nodeset: runc-debian-stretch
         - tox-integration-standalone:
             nodeset: debian9-vm
