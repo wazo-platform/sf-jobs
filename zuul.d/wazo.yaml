@@ -34,25 +34,25 @@
     parent: wazo-tox
     vars:
       docker_install_siblings: true
-      tox_envlist: integration
+      tox_envlist: [integration]
 
 - job:
     name: wazo-tox-py27
     parent: wazo-tox
     vars:
-      tox_envlist: py35
+      tox_envlist: [py27]
 
 - job:
     name: wazo-tox-py35
     parent: wazo-tox
     vars:
-      tox_envlist: py35
+      tox_envlist: [py35]
 
 - job:
     name: tox-py37
     parent: wazo-tox
     vars:
-      tox_envlist: py37
+      tox_envlist: [py37]
 
 - project-template:
     name: wazo-py37
@@ -83,11 +83,11 @@
     description: Project template for tox -e linters
     check:
       jobs:
-        - wazo-tox-linters:
+        - tox-linters:
             nodeset: runc-debian-buster
     gate:
       jobs:
-        - wazo-tox-linters:
+        - tox-linters:
             nodeset: runc-debian-buster
 
 - project-template:
