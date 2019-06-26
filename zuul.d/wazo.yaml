@@ -18,38 +18,52 @@
         name: test-node
 
 - job:
-    name: tox-integration
+    name: wazo-tox
     parent: tox
     description: |
-      Run integration tests.
+      Run tox
 
-      Uses tox with the ``integration`` environment.
-    run: playbooks/tox-integration/run.yaml
-    vars:
-      tox_envlist: integration
-      docker_compose_services_override: []
+      Like tox but
+      * install sibling packages in virtualenv for Depends-On too
+      * install sibling packages in docker compose environement for integration if enabled
+        with docker_install_siblings
+    run: playbooks/tox-wazo/run.yaml
 
 - job:
-    name: tox-integration-standalone
-    parent: tox
-    description: |
-      Run integration tests.
-
-      Uses tox with the ``integration`` environment.
+    name: wazo-tox-integration
+    parent: wazo-tox
     vars:
+      docker_install_siblings: true
       tox_envlist: integration
 
+- job:
+    name: wazo-tox-py27
+    parent: wazo-tox
+    vars:
+      tox_envlist: py35
+
+- job:
+    name: wazo-tox-py35
+    parent: wazo-tox
+    vars:
+      tox_envlist: py35
+
+- job:
+    name: tox-py37
+    parent: wazo-tox
+    vars:
+      tox_envlist: py37
 
 - project-template:
     name: wazo-py37
     description: Project template for tox -e py37
     check:
       jobs:
-        - tox-py37:
+        - wazo-tox-py37:
             nodeset: runc-debian-stretch
     gate:
       jobs:
-        - tox-py37:
+        - wazo-tox-py37:
             nodeset: runc-debian-stretch
 
 - project-template:
@@ -57,11 +71,11 @@
     description: Project template for tox -e py35
     check:
       jobs:
-        - tox-py35:
+        - wazo-tox-py35:
             nodeset: runc-debian-stretch
     gate:
       jobs:
-        - tox-py35:
+        - wazo-tox-py35:
             nodeset: runc-debian-stretch
 
 - project-template:
@@ -69,11 +83,11 @@
     description: Project template for tox -e linters
     check:
       jobs:
-        - tox-linters:
+        - wazo-tox-linters:
             nodeset: runc-debian-buster
     gate:
       jobs:
-        - tox-linters:
+        - wazo-tox-linters:
             nodeset: runc-debian-buster
 
 - project-template:
@@ -81,11 +95,11 @@
     description: Project template for tox -e py27
     check:
       jobs:
-        - tox-py27:
+        - wazo-tox-py27:
             nodeset: runc-debian-stretch
     gate:
       jobs:
-        - tox-py27:
+        - wazo-tox-py27:
             nodeset: runc-debian-stretch
 
 - project-template:
@@ -93,21 +107,9 @@
     description: Project template for tox -e integration
     check:
       jobs:
-        - tox-integration:
+        - wazo-tox-integration:
             nodeset: debian9-vm
     gate:
       jobs:
-        - tox-integration:
-            nodeset: debian9-vm
-
-- project-template:
-    name: wazo-integration-standalone
-    description: Project template for tox -e integration, but without depends-on enabled
-    check:
-      jobs:
-        - tox-integration-standalone:
-            nodeset: debian9-vm
-    gate:
-      jobs:
-        - tox-integration-standalone:
+        - wazo-tox-integration:
             nodeset: debian9-vm

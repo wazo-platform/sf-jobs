@@ -27,15 +27,18 @@
   vars:
     projects_filter: "[?name!='{{ zuul.project.name }}']"
   register: docker_sibling_results
+  when: docker_install_siblings
 
 - name: Set docker-compose override location env
   set_fact:
    docker_compose_override_env:
      WAZO_TEST_DOCKER_OVERRIDE_EXTRA: "{{ docker_sibling_results.file }}"
+  when: docker_install_siblings
 
 - name: Emit docker compose override file
   debug:
     msg: "Docker compose override file contents: {{ docker_sibling_results.contents }}"
+  when: docker_install_siblings
 
 - name: Emit tox command
   debug:
