@@ -48,6 +48,7 @@
 
 - name: Run DLRN build
   shell:
+    # yamllint disable-line rule:line-length
     cmd: "{{ dlrn }} --config-file {{ working_dir }}/projects.ini --package-name {{ project_info['name'] }} --use-public --local --info-repo {{ working_dir }}/rdoinfo --verbose-mock"
   args:
     chdir: "{{ working_dir }}"

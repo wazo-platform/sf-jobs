@@ -31,8 +31,8 @@
 
 - name: Set docker-compose override location env
   set_fact:
-   docker_compose_override_env:
-     WAZO_TEST_DOCKER_OVERRIDE_EXTRA: "{{ docker_sibling_results.file }}"
+    docker_compose_override_env:
+      WAZO_TEST_DOCKER_OVERRIDE_EXTRA: "{{ docker_sibling_results.file }}"
   when: docker_install_siblings
 
 - name: Emit docker compose override file
@@ -47,5 +47,6 @@
 - name: Run tox
   args:
     chdir: "{{ zuul_work_dir }}"
+  # yamllint disable-line rule:line-length
   environment: "{{ tox_environment|combine(docker_compose_override_env|default({}))|combine(tox_constraints_env|default({})) }}"
   command: "{{ tox_executable }} -e{{ tox_envlist }} {{ tox_extra_args }}"
