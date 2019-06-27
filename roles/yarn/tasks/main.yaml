@@ -1,0 +1,22 @@
+- name: Prepare config.js
+  copy:
+    content: |
+      module.exports = {
+        githubToken: '',
+        algolia: {
+          appId: '',
+          publicKey: '',
+          apiKey: '',
+        },
+      };
+    dest: "{{ zuul.project.src_dir }}/config.js"
+
+- name: yarn
+  args:
+    chdir: "{{ zuul.project.src_dir }}"
+  command: "yarnpkg"
+
+- name: yarn build
+  args:
+    chdir: "{{ zuul.project.src_dir }}"
+  command: "yarnpkg build"
