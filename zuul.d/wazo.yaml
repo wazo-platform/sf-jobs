@@ -54,18 +54,6 @@
       tox_envlist: py37
 
 - project-template:
-    name: wazo-tox-py27
-    description: Project template for tox -e py27
-    check:
-      jobs:
-        - wazo-tox-py27:
-            nodeset: runc-debian-stretch
-    gate:
-      jobs:
-        - wazo-tox-py27:
-            nodeset: runc-debian-stretch
-
-- project-template:
     name: wazo-tox-py37
     description: Project template for tox -e py37
     check:
@@ -100,6 +88,18 @@
       jobs:
         - tox-linters:
             nodeset: runc-debian-buster
+
+- project-template:
+    name: wazo-tox-py27
+    description: Project template for tox -e py27
+    check:
+      jobs:
+        - wazo-tox-py27:
+            nodeset: runc-debian-stretch
+    gate:
+      jobs:
+        - wazo-tox-py27:
+            nodeset: runc-debian-stretch
 
 - project-template:
     name: wazo-tox-integration
