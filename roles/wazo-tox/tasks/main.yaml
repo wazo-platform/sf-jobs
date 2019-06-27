@@ -47,5 +47,5 @@
 - name: Run tox
   args:
     chdir: "{{ zuul_work_dir }}"
-  environment: "{{ tox_environment|combine(docker_compose_override_env)|combine(tox_constraints_env|default({})) }}"
+  environment: "{{ tox_environment|combine(docker_compose_override_env|default({}))|combine(tox_constraints_env|default({})) }}"
   command: "{{ tox_executable }} -e{{ tox_envlist }} {{ tox_extra_args }}"
