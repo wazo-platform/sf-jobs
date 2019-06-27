@@ -24,6 +24,7 @@
 - name: Create vhost file
   template:
     src: templates/vhost.conf.j2
+    # yamllint disable-line rule:line-length
     dest: "{{ zuul_pagesvhosts_root }}/pages-{{ zuul.project.name | regex_replace('/', '_') | regex_replace('\\.\\.', '') }}.conf"
     mode: 0644
   register: apache_conf

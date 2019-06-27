@@ -3,11 +3,13 @@
     dlrnapi_url: "{{ gateway_url }}/dlrn-api/{{ dlrn_project }}"
 
 #- debug:
+# yamllint disable-line rule:line-length
 #    msg: "{{ dlrnapi }} --url {{ dlrnapi_url }} --username {{ dlrnapi_site.username }} --password {{ dlrnapi_site.secret | trim }} commit-import --repo-url {{ buildset_artifacts_url }}/{{ zuul.branch }}/repos/current/"
 
 - name: Import commit
   shell:
+    # yamllint disable-line rule:line-length
     cmd: "{{ dlrnapi }} --url {{ dlrnapi_url }} --username {{ dlrnapi_site.username }} commit-import --repo-url {{ buildset_artifacts_url }}/{{ zuul.branch }}/repos/current/"
   environment:
-      DLRNAPI_PASSWORD: "{{ dlrnapi_site.secret | trim }}"
-      SSL_VERIFY: "{{ dlrnapi_site.ssl_verify | default('1') }}"
+    DLRNAPI_PASSWORD: "{{ dlrnapi_site.secret | trim }}"
+    SSL_VERIFY: "{{ dlrnapi_site.ssl_verify | default('1') }}"

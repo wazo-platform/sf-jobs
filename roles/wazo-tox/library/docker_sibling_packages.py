@@ -40,9 +40,11 @@ def main():
         with open(top_level) as f:
             package = f.read().strip()
 
-        volumes.add("{root}/{package}:/usr/local/lib/python3.5/site-packages/{package}".format(
-            root=os.path.realpath(root), package=package
-        ))
+        volumes.add(
+            "{root}/{package}:"
+            "/usr/local/lib/python3.5/site-packages/{package}".format(
+                root=os.path.realpath(root), package=package
+            ))
 
     volumes = list(volumes)
     docker_compose_override = {

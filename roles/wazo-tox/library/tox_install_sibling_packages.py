@@ -15,6 +15,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this software.  If not, see <http://www.gnu.org/licenses/>.
 from __future__ import absolute_import, division, print_function
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
+
+import pkg_resources as prAPI
+import os
+import subprocess
+import tempfile
+import traceback
+
+from ansible.module_utils.basic import AnsibleModule
+
 __metaclass__ = type
 
 DOCUMENTATION = '''
@@ -46,19 +59,6 @@ options:
     required: true
     type: list
 '''
-
-try:
-    import configparser
-except ImportError:
-    import ConfigParser as configparser
-
-import pkg_resources as prAPI
-import os
-import subprocess
-import tempfile
-import traceback
-
-from ansible.module_utils.basic import AnsibleModule
 
 log = list()
 
@@ -212,12 +212,11 @@ def main():
                 "Found {name} python package installed".format(
                     name=dep_name))
             if (dep_name == package_name or
-                prAPI.to_filename(dep_name) == package_name):
+               prAPI.to_filename(dep_name) == package_name):
                 # We don't need to re-process ourself. We've filtered ourselves
                 # from the source dir list, but let's be sure nothing is weird.
                 log.append(
-                    "Skipping {name} because it's us".format(
-                        name=dep_name))
+                    "Skipping {name} because it's us".format(name=dep_name))
                 continue
             if dep_name in sibling_python_packages:
                 log.append(
