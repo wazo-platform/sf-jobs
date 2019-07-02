@@ -1,0 +1,9 @@
+- name: Download orig sources
+  command: debian/rules get-orig-source
+  args:
+    chdir: "{{ zuul.project.src_dir }}"
+
+- name: Build debian package
+  command: debuild -d --no-tgz-check --no-lintian --preserve-envvar=MAKEFLAGS --preserve-envvar=PATH -b -us -uc -ui --no-sign
+  args:
+    chdir: "{{ zuul.project.src_dir }}"
