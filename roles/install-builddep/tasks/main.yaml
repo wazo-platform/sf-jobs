@@ -1,0 +1,32 @@
+- name: Install build essential packages
+  become: yes
+  apt:
+    name: "{{ item }}"
+    update_cache: true
+    state: present
+  with_items:
+    - 'devscripts'
+    - 'dirmngr'
+    - 'build-essential'
+  vars:
+    DEBIAN_FRONTEND: noninteractive
+
+- name: Import Wazo gpg key
+  become: yes
+  apt_key:
+    keyserver: hkp://keys.gnupg.net
+    id: 3F1BF7FC527FBC6A
+
+- name: Configure Wazo dev repository
+  become: yes
+  apt_repository:
+    repo: deb http://mirror.wazo.community/debian/ wazo-dev-stretch main
+    state: present
+
+- name: Install build dependencies
+  become: yes
+  command: mk-build-deps --install --tool='env DEBIAN_FRONTEND=noninteractive apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' debian/control
+  vars:
+    DEBIAN_FRONTEND: noninteractive
+  args:
+    chdir: "{{ zuul.project.src_dir }}"
