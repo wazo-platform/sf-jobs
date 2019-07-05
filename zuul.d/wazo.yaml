@@ -58,6 +58,12 @@
     pre-run: playbooks/debian-packaging/pre.yaml
     run: playbooks/debian-packaging/run.yaml
 
+- job:
+    name: yarn-build
+    description: Run yarn build
+    pre-run: playbooks/yarn/pre.yaml
+    run: playbooks/yarn/run.yaml
+
 - project-template:
     name: wazo-tox-py37
     description: Project template for tox -e py37
@@ -129,3 +135,15 @@
       jobs:
         - debian-packaging:
             nodeset: debian9-vm
+
+- project-template:
+    name: yarn-template
+    description: Project template for yarn build
+    check:
+      jobs:
+        - yarn-build:
+            nodeset: runc-debian-buster
+    gate:
+      jobs:
+        - yarn-build:
+            nodeset: runc-debian-buster
