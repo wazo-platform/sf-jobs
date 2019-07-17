@@ -25,7 +25,7 @@
 
 - name: Install build dependencies
   become: yes
-  command: mk-build-deps --install --tool='env DEBIAN_FRONTEND=noninteractive apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' debian/control
+  command: mk-build-deps --install --remove --tool='env DEBIAN_FRONTEND=noninteractive apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' debian/control
   vars:
     DEBIAN_FRONTEND: noninteractive
   args:
