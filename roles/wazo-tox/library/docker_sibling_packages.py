@@ -33,22 +33,33 @@ def main():
     volumes = set()
     for project in projects:
         root = project['src_dir']
-        subprocess.check_output(
-            [os.path.abspath(tox_python), 'setup.py', 'egg_info'],
-            cwd=os.path.abspath(root))
-        top_level = glob.glob("{}/*.egg-info/top_level.txt".format(root))[0]
-        with open(top_level) as f:
-            package = f.read().strip()
+        if os.path.exists('setup.py'):
+            subprocess.check_output(
+                [os.path.abspath(tox_python), 'setup.py', 'egg_info'],
+                cwd=os.path.abspath(root))
+            top_level = glob.glob(
+                "{}/*.egg-info/top_level.txt".format(root))[0]
+            with open(top_level) as f:
+                package = f.read().strip()
 
-        volumes.add(
-            "{root}/{package}:"
-            "/usr/local/lib/python3.5/site-packages/{package}".format(
-                root=os.path.realpath(root), package=package
-            ))
+            volumes.add(
+                "{root}/{package}:"
+                "/usr/local/lib/python3.5/site-packages/{package}".format(
+                    root=os.path.realpath(root), package=package
+                ))
 
+    version = '3'
+    compose_file = (
+        '{project_dir}/integration_tests/assets/docker-compose.yml'.format(
+            project_dir=project_dir))
+    if os.path.exists(compose_file):
+        with open(compose_file) as f:
+            data = yaml.load(f)
+            if 'version' in data:
+                version = data['version']
     volumes = list(volumes)
     docker_compose_override = {
-        'version': '3',
+        'version': version,
         'services': dict([
             (service, {
                 'volumes': volumes
