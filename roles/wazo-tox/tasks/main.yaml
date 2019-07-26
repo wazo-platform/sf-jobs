@@ -35,9 +35,10 @@
       WAZO_TEST_DOCKER_OVERRIDE_EXTRA: "{{ docker_sibling_results.file }}"
   when: docker_install_siblings
 
-- name: Set the INTEGRATION_TEST_TIMEOUT environment variable
+- name: Set the integration environment variables
   set_fact:
-    integration_test_timeout:
+    integration_env:
+      WAZO_TEST_DOCKER_LOGS_DIR: '{{ zull.executor.log_root }}'
       INTEGRATION_TEST_TIMEOUT: '{{ integration_test_timeout | default(omit) }}'
 
 - name: Emit docker compose override file
@@ -53,5 +54,5 @@
   args:
     chdir: "{{ zuul_work_dir }}"
   # yamllint disable-line rule:line-length
-  environment: "{{ tox_environment|combine(docker_compose_override_env|default({}))|combine(tox_constraints_env|default({}))|combine(integration_test_timeout|default({})) }}"
+  environment: "{{ tox_environment|combine(docker_compose_override_env|default({}))|combine(tox_constraints_env|default({}))|combine(integration_env|default({})) }}"
   command: "{{ tox_executable }} -e{{ tox_envlist }} {{ tox_extra_args }}"
