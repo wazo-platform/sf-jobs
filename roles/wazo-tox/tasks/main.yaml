@@ -38,7 +38,7 @@
 - name: Set the integration environment variables
   set_fact:
     integration_env:
-      WAZO_TEST_DOCKER_LOGS_DIR: '{{ zull.executor.log_root }}'
+      WAZO_TEST_DOCKER_LOGS_DIR: '{{ zuul.executor.log_root }}'
       INTEGRATION_TEST_TIMEOUT: '{{ integration_test_timeout | default(omit) }}'
 
 - name: Emit docker compose override file
