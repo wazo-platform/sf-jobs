@@ -38,6 +38,7 @@
 - name: Set the integration environment variables
   set_fact:
     integration_env:
+      WAZO_TEST_DOCKER_LOGS_ENABLED: 1
       WAZO_TEST_DOCKER_LOGS_DIR: '{{ zuul.executor.log_root }}'
       INTEGRATION_TEST_TIMEOUT: '{{ integration_test_timeout | default(omit) }}'
 
