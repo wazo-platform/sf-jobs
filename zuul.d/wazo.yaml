@@ -57,6 +57,7 @@
     name: debian-packaging
     pre-run: playbooks/debian-packaging/pre.yaml
     run: playbooks/debian-packaging/run.yaml
+    post-run: playbooks/debian-packaging/post.yaml
 
 - job:
     name: yarn-build

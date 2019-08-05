@@ -7,3 +7,8 @@
   command: debuild -d --no-tgz-check --no-lintian --preserve-envvar=MAKEFLAGS --preserve-envvar=PATH -us -uc -ui --no-sign
   args:
     chdir: "{{ zuul.project.src_dir }}"
+
+- name: List content of debian packages
+  shell: "for p in $(ls *.deb); do echo \"=== $p ===\"; dpkg -c $p; done"
+  args:
+    chdir: "{{ zuul.project.src_dir }}/.."
