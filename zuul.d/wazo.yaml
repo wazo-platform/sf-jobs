@@ -5,6 +5,12 @@
         name: test-node
 
 - nodeset:
+    name: debian10-vm
+    nodes:
+      - label: debian10-vm
+        name: test-node
+
+- nodeset:
     name: runc-debian-buster
     nodes:
       - label: runc-debian-buster
