@@ -2,13 +2,13 @@
     name: debian9-vm
     nodes:
       - label: debian9-vm
-        name: test-node
+        name: debian9-node
 
 - nodeset:
     name: debian10-vm
     nodes:
       - label: debian10-vm
-        name: test-node
+        name: debian10-node
 
 - nodeset:
     name: runc-debian-buster
@@ -54,7 +54,7 @@
       tox_envlist: py35
 
 - job:
-    name: tox-py37
+    name: wazo-tox-py37
     parent: wazo-tox
     vars:
       tox_envlist: py37
@@ -77,11 +77,11 @@
     check:
       jobs:
         - wazo-tox-py37:
-            nodeset: runc-debian-stretch
+            nodeset: runc-debian-buster
     gate:
       jobs:
         - wazo-tox-py37:
-            nodeset: runc-debian-stretch
+            nodeset: runc-debian-buster
 
 - project-template:
     name: wazo-tox-py35
@@ -125,11 +125,11 @@
     check:
       jobs:
         - wazo-tox-integration:
-            nodeset: debian9-vm
+            nodeset: debian10-vm
     gate:
       jobs:
         - wazo-tox-integration:
-            nodeset: debian9-vm
+            nodeset: debian10-vm
 
 - project-template:
     name: debian-packaging-template
@@ -137,11 +137,11 @@
     check:
       jobs:
         - debian-packaging:
-            nodeset: debian9-vm
+            nodeset: debian10-vm
     gate:
       jobs:
         - debian-packaging:
-            nodeset: debian9-vm
+            nodeset: debian10-vm
 
 - project-template:
     name: yarn-template
