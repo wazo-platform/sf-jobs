@@ -20,7 +20,7 @@
 - name: Configure Wazo dev repository
   become: yes
   apt_repository:
-    repo: deb http://mirror.wazo.community/debian/ wazo-dev-stretch main
+    repo: deb http://mirror.wazo.community/debian/ wazo-dev-buster main
     state: present
 
 - name: Install build dependencies
