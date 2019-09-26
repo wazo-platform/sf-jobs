@@ -1,10 +1,10 @@
-- name: Download orig sources if needed
-  shell: if grep -q get-orig-source debian/rules; then debian/rules get-orig-source; fi
+- name: Download orig sources if needed or update changelog
+  shell: if grep -q get-orig-source debian/rules; then debian/rules get-orig-source; tar xvf ../*.tar* --strip 1; else dch -b -v $(../xivo-ci/bin/wazo-package-version $(wget -q -O - http://mirror.wazo.community/version/unstable)) --distribution $distribution --force-distribution \"$(git log -1 HEAD --pretty=format:%s)\"; fi
   args:
     chdir: "{{ zuul.project.src_dir }}"
 
-- name: Build binary debian packages
-  command: debuild -d --no-tgz-check --no-lintian --preserve-envvar=MAKEFLAGS --preserve-envvar=PATH -us -uc -ui --no-sign
+- name: Build debian packages
+  shell: "debuild -d --no-tgz-check --no-lintian --preserve-envvar=MAKEFLAGS --preserve-envvar=PATH -us -uc -ui --no-sign"
   args:
     chdir: "{{ zuul.project.src_dir }}"
 

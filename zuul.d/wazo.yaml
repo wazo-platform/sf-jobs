@@ -63,7 +63,6 @@
     name: debian-packaging
     pre-run: playbooks/debian-packaging/pre.yaml
     run: playbooks/debian-packaging/run.yaml
-    post-run: playbooks/debian-packaging/post.yaml
 
 - job:
     name: yarn-build
@@ -133,15 +132,19 @@
 
 - project-template:
     name: debian-packaging-template
-    description: Project template for tox -e integration
+    description: Project template to build Debian packages
     check:
       jobs:
         - debian-packaging:
             nodeset: debian10-vm
+            required-projects:
+              wazo-platform/xivo-ci
     gate:
       jobs:
         - debian-packaging:
             nodeset: debian10-vm
+            required-projects:
+              wazo-platform/xivo-ci
 
 - project-template:
     name: yarn-template
