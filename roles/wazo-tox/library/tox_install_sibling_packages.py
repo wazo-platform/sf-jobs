@@ -171,17 +171,8 @@ def main():
     if constraints and not os.path.exists(constraints):
         module.fail_json(msg="Constraints file {constraints} was not found")
 
-    # Who are we?
-    try:
-        c = configparser.ConfigParser()
-        c.read(os.path.join(project_dir, 'setup.cfg'))
-        package_name = c.get('metadata', 'name')
-    except Exception:
-        module.exit_json(
-            changed=False, msg="No name in setup.cfg, skipping siblings")
-
-    envdir = '{project_dir}/.tox/{envlist}'.format(
-        project_dir=project_dir, envlist=envlist)
+    envdir = '{project_dir}/.tox/{envlist}'.format(project_dir=project_dir,
+                                                   envlist=envlist)
     if not os.path.exists(envdir):
         module.exit_json(
             changed=False, msg="envdir does not exist, skipping siblings")
@@ -193,6 +184,28 @@ def main():
     log_dir = '{envdir}/log'.format(envdir=envdir)
     log_file = '{log_dir}/{envlist}-siblings.txt'.format(
         log_dir=log_dir, envlist=envlist)
+
+    # Who are we?
+    package_name = None
+    try:
+        c = configparser.ConfigParser()
+        c.read(os.path.join(project_dir, 'setup.cfg'))
+        package_name = c.get('metadata', 'name')
+    except Exception:
+        try:
+            package_name = subprocess.check_output(
+                [os.path.abspath(tox_python), 'setup.py', '--name'],
+                cwd=os.path.abspath(project_dir))
+            if package_name:
+                package_name = package_name.strip()
+        except Exception:
+            pass
+
+    if not package_name:
+        module.exit_json(
+            changed=False,
+            msg="No name in setup.cfg or setup.py, skipping siblings"
+        )
 
     log.append(
         "Processing siblings for {name} from {project_dir}".format(
