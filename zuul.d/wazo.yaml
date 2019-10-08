@@ -70,6 +70,17 @@
     pre-run: playbooks/yarn/pre.yaml
     run: playbooks/yarn/run.yaml
 
+- job:
+    name: wazo-acceptance-job
+    description: install Wazo platform and run acceptance tests
+    required-projects:
+      - wazo-platform/wazo-ansible
+      - wazo-platform/wazo-acceptance
+    timeout: 10800
+    pre-run: playbooks/wazo-acceptance/pre.yaml
+    run: playbooks/wazo-acceptance/run.yaml
+    post-run: playbooks/wazo-acceptance/fetch-logs.yaml
+
 - project-template:
     name: wazo-tox-py37
     description: Project template for tox -e py37
