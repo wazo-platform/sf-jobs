@@ -48,12 +48,6 @@
       tox_envlist: py27
 
 - job:
-    name: wazo-tox-py35
-    parent: wazo-tox
-    vars:
-      tox_envlist: py35
-
-- job:
     name: wazo-tox-py37
     parent: wazo-tox
     vars:
