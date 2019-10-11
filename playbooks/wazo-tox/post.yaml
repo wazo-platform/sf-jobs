@@ -1,6 +1,11 @@
 ---
 - hosts: all
   tasks:
+    - name: check if rules file exists
+      stat:
+        path: /tmp/docker-logs
+      register: docker_logs
+
     - name: Fetch integration logs
       become: yes
       synchronize:
@@ -10,3 +15,4 @@
         copy_links: true
         verify_host: true
         rsync_opts: []
+      when: docker_logs.stat.exists == True
