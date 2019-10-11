@@ -7,7 +7,6 @@
       register: docker_logs
 
     - name: Fetch integration logs
-      become: yes
       synchronize:
         src: '/tmp/docker-logs'
         dest: '{{ zuul.executor.log_root }}/docker'
