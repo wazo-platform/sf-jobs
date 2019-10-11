@@ -39,8 +39,9 @@
   set_fact:
     integration_env:
       WAZO_TEST_DOCKER_LOGS_ENABLED: 1
-      WAZO_TEST_DOCKER_LOGS_DIR: '{{ zuul.executor.log_root }}'
+      WAZO_TEST_DOCKER_LOGS_DIR: "/tmp/docker-logs"
       INTEGRATION_TEST_TIMEOUT: '{{ integration_test_timeout | default(omit) }}'
+      TOX_TESTENV_PASSENV: 'INTEGRATION_TEST_TIMEOUT  WAZO_TEST_DOCKER_LOGS_DIR  WAZO_TEST_DOCKER_LOGS_ENABLED WAZO_TEST_DOCKER_OVERRIDE_EXTRA'
 
 - name: Emit docker compose override file
   debug:

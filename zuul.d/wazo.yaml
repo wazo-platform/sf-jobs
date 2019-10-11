@@ -33,6 +33,7 @@
       * install sibling packages in docker compose environement for integration if enabled
         with docker_install_siblings
     run: playbooks/tox-wazo/run.yaml
+    post-run: playbooks/tox-wazo/post.yaml
 
 - job:
     name: wazo-tox-integration
