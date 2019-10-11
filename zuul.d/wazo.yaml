@@ -32,8 +32,8 @@
       * install sibling packages in virtualenv for Depends-On too
       * install sibling packages in docker compose environement for integration if enabled
         with docker_install_siblings
-    run: playbooks/tox-wazo/run.yaml
-    post-run: playbooks/tox-wazo/post.yaml
+    run: playbooks/wazo-tox/run.yaml
+    post-run: playbooks/wazo-tox/post.yaml
 
 - job:
     name: wazo-tox-integration
