@@ -8,8 +8,8 @@
 
     - name: Fetch integration logs
       synchronize:
-        src: '/tmp/docker-logs'
-        dest: '{{ zuul.executor.log_root }}/docker'
+        src: '/tmp/docker-logs/'
+        dest: '{{ zuul.executor.log_root }}/docker/'
         mode: pull
         copy_links: true
         verify_host: true
