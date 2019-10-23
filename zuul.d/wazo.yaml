@@ -36,6 +36,12 @@
     post-run: playbooks/wazo-tox/post.yaml
 
 - job:
+    name: wazo-tox-molecule
+    parent: wazo-tox
+    vars:
+      tox_envlist: molecule
+
+- job:
     name: wazo-tox-integration
     parent: wazo-tox
     vars:
@@ -134,6 +140,18 @@
     gate:
       jobs:
         - wazo-tox-integration:
+            nodeset: debian10-vm
+
+- project-template:
+    name: molecule
+    description: Project template for tox -e molecule
+    check:
+      jobs:
+        - wazo-tox-molecule:
+            nodeset: debian10-vm
+    gate:
+      jobs:
+        - wazo-tox-molecule:
             nodeset: debian10-vm
 
 - project-template:
