@@ -5,7 +5,6 @@
       become: yes
       user:
         name: zuul-worker
-        group: audio
         generate_ssh_key: yes
         ssh_key_file: "~/.ssh/id_rsa"
 
@@ -23,15 +22,11 @@
     - name: Validate root key
       shell: "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PreferredAuthentications=publickey root@localhost -n \"/bin/ls\""
 
-    - name: Install list of packages
+    - name: Install ansible
       become: yes
-      apt: name={{item}} state=installed
-      with_items:
-        - ansible
-        - libsasl2-dev
-        - linphone-nogtk
-        - python3-dev
-        - lsof
+      apt:
+        name: ansible
+        state: present
 
     - name: Install postgresql ansible module from galaxy
       become: yes
