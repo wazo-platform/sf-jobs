@@ -2,10 +2,6 @@
 - hosts: all
   tasks:
 
-    - name: Get some commands output
-      become: yes
-      script: collect_commands.sh
-
     - name: Upload logs
       become: yes
       synchronize:
@@ -20,6 +16,20 @@
       become: yes
       synchronize:
         src: '/etc'
+        dest: '{{ zuul.executor.log_root }}'
+        mode: pull
+        copy_links: true
+        verify_host: true
+        rsync_opts: []
+
+    - name: Get some commands output
+      become: yes
+      script: collect_commands.sh
+
+    - name: Upload commands
+      become: yes
+      synchronize:
+        src: '/tmp/commands'
         dest: '{{ zuul.executor.log_root }}'
         mode: pull
         copy_links: true
