@@ -11,6 +11,12 @@
         name: debian10-node
 
 - nodeset:
+    name: debian10-vm-m2
+    nodes:
+      - label: debian10-vm-m2
+        name: debian10-m2-node
+
+- nodeset:
     name: runc-debian-buster
     nodes:
       - label: runc-debian-buster

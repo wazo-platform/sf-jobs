@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LOG_DIR=/var/log/commands
+LOG_DIR=/tmp/commands
 mkdir -p ${LOG_DIR}
 
 log(){
