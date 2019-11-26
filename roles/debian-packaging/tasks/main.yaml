@@ -9,7 +9,7 @@
     chdir: "{{ zuul.project.src_dir }}"
 
 - name: Install packages
-  shell: "yes | debi --with-depends"
+  shell: "apt install -y ../*.deb"
   become: yes
   args:
     chdir: "{{ zuul.project.src_dir }}"
