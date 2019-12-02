@@ -1,13 +1,22 @@
 - hosts: all
   roles:
     - debian-packaging
+
   tasks:
     - name: Upload debian packages
       become: yes
       synchronize:
-        src: "{{ zuul.project.src_dir }}/../*.deb"
+        src: "{{ zuul.project.src_dir }}/../{Packages,*.deb}"
         dest: '{{ zuul.executor.log_root }}/debian/'
         mode: pull
         recursive: false
         verify_host: true
         rsync_opts: []
+
+    - name: Return repo url
+      zuul_return:
+        data:
+          zuul:
+            artifacts:
+              - name: repo
+                url: debian

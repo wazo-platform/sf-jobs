@@ -70,6 +70,7 @@
     name: debian-packaging
     pre-run: playbooks/debian-packaging/pre.yaml
     run: playbooks/debian-packaging/run.yaml
+    provides: repo
 
 - job:
     name: yarn-build

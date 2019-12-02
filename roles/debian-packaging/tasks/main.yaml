@@ -23,3 +23,8 @@
   shell: "lintian *.deb"
   args:
     chdir: "{{ zuul.project.src_dir }}/.."
+
+- name: Create Packages file
+  shell: "dpkg-scanpackages . > Packages"
+  args:
+    chdir: "{{ zuul.project.src_dir }}/.."
