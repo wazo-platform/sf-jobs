@@ -19,7 +19,7 @@
             linphone: True
           instances:
             default:
-              wazo_host: 127.0.0.1
+              wazo_host: "{{ ansible_default_ipv4.address }}"
 
     - name: Setup acceptance tests
       shell: "tox -e setup"
