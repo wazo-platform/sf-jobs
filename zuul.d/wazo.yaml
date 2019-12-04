@@ -90,6 +90,18 @@
     post-run: playbooks/wazo-acceptance/fetch-logs.yaml
 
 - project-template:
+    name: wazo-tox-py37-vm
+    description: Project template for tox -e py37
+    check:
+      jobs:
+        - wazo-tox-py37:
+            nodeset: debian10-vm
+    gate:
+      jobs:
+        - wazo-tox-py37:
+            nodeset: debian10-vm
+
+- project-template:
     name: wazo-tox-py37
     description: Project template for tox -e py37
     check:
