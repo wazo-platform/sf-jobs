@@ -3,7 +3,10 @@
   tasks:
     - name: Run the installation script
       become: yes
-      command: "ansible-playbook -i inventories/uc-engine uc-engine.yml"
+      command: >
+          ansible-playbook -i inventories/uc-engine uc-engine.yml
+          --extra-vars wazo_distribution=wazo-dev-buster
+          --extra-vars wazo_distribution_upgrade=wazo-dev-buster
       args:
         chdir: "{{ zuul.project.src_dir }}/../wazo-ansible"
 
