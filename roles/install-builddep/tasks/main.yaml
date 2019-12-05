@@ -1,13 +1,13 @@
 - name: Install build essential packages
   become: yes
   apt:
-    name: "{{ item }}"
+    name:
+      - 'devscripts'
+      - 'dirmngr'
+      - 'build-essential'
+      - 'autopkgtest'
     update_cache: true
     state: present
-  with_items:
-    - 'devscripts'
-    - 'dirmngr'
-    - 'build-essential'
   vars:
     DEBIAN_FRONTEND: noninteractive
 
