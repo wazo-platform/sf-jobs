@@ -100,6 +100,10 @@
       jobs:
         - wazo-tox-py37:
             nodeset: debian10-vm
+    auto-merge:
+      jobs:
+        - wazo-tox-py37:
+            nodeset: debian10-vm
 
 - project-template:
     name: wazo-tox-py37
@@ -136,6 +140,10 @@
       jobs:
         - tox-linters:
             nodeset: runc-debian-buster
+    auto-merge:
+      jobs:
+        - tox-linters:
+            nodeset: runc-debian-buster
 
 - project-template:
     name: wazo-tox-py27
@@ -157,6 +165,10 @@
         - wazo-tox-integration:
             nodeset: debian10-vm
     gate:
+      jobs:
+        - wazo-tox-integration:
+            nodeset: debian10-vm
+    auto-merge:
       jobs:
         - wazo-tox-integration:
             nodeset: debian10-vm
@@ -183,6 +195,12 @@
             required-projects:
               wazo-platform/xivo-ci
     gate:
+      jobs:
+        - debian-packaging:
+            nodeset: debian10-vm
+            required-projects:
+              wazo-platform/xivo-ci
+    auto-merge:
       jobs:
         - debian-packaging:
             nodeset: debian10-vm
