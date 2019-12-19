@@ -28,3 +28,15 @@
   shell: "dpkg-scanpackages . > Packages"
   args:
     chdir: "{{ zuul.project.src_dir }}/.."
+
+- name: Check if there are tests to run
+  stat:
+    path: "{{ zuul.project.src_dir }}/debian/tests/control"
+  register: debian_tests_control
+
+- name: Run the tests
+  shell: "autopkgtest $PWD -- null"
+  become: yes
+  when: debian_tests_control.stat.exists
+  args:
+    chdir: "{{ zuul.project.src_dir }}"
