@@ -73,6 +73,10 @@
     provides: repo
 
 - job:
+    name: docker-build
+    run: playbooks/docker-build/run.yaml
+
+- job:
     name: yarn-build
     description: Run yarn build
     pre-run: playbooks/yarn/pre.yaml
@@ -183,6 +187,22 @@
     gate:
       jobs:
         - wazo-tox-molecule:
+            nodeset: debian10-vm
+
+- project-template:
+    name: docker-build-template
+    description: Project template to build a Docker image
+    check:
+      jobs:
+        - docker-build:
+            nodeset: debian10-vm
+    gate:
+      jobs:
+        - docker-build:
+            nodeset: debian10-vm
+    auto-merge:
+      jobs:
+        - docker-build:
             nodeset: debian10-vm
 
 - project-template:
