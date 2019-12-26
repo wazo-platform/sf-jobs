@@ -1,0 +1,3 @@
+---
+- import_playbook: "../docker-build/run.yaml"
+- import_playbook: "../wazo-c4-test/run.yaml"

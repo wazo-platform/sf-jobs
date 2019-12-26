@@ -77,6 +77,16 @@
     run: playbooks/docker-build/run.yaml
 
 - job:
+    name: wazo-c4-docker-build-test
+    run: playbooks/wazo-c4-docker-build-test/run.yaml
+    post-run: playbooks/wazo-c4-test/fetch-logs.yaml
+
+- job:
+    name: wazo-c4-test
+    run: playbooks/wazo-c4-test/run.yaml
+    post-run: playbooks/wazo-c4-test/fetch-logs.yaml
+
+- job:
     name: yarn-build
     description: Run yarn build
     pre-run: playbooks/yarn/pre.yaml
@@ -204,6 +214,44 @@
       jobs:
         - docker-build:
             nodeset: debian10-vm
+
+- project-template:
+    name: wazo-c4-test-template
+    description: Project template to test wazo-c4
+    check:
+      jobs:
+        - wazo-c4-test:
+            nodeset: debian10-vm
+    gate:
+      jobs:
+        - wazo-c4-test:
+            nodeset: debian10-vm
+    auto-merge:
+      jobs:
+        - wazo-c4-test:
+            nodeset: debian10-vm
+
+- project-template:
+    name: wazo-c4-docker-build-test-template
+    description: Project template to build and test a C4 docker image
+    check:
+      jobs:
+        - wazo-c4-docker-build-test:
+            nodeset: debian10-vm
+            required-projects:
+              wazo-platform/wazo-c4
+    gate:
+      jobs:
+        - wazo-c4-docker-build-test:
+            nodeset: debian10-vm
+            required-projects:
+              wazo-platform/wazo-c4
+    auto-merge:
+      jobs:
+        - wazo-c4-docker-build-test:
+            nodeset: debian10-vm
+            required-projects:
+              wazo-platform/wazo-c4
 
 - project-template:
     name: debian-packaging-template
