@@ -1,7 +1,5 @@
 ---
 - hosts: all
   tasks:
-    - name: Build a docker image
-      shell: "docker build -t wazopbx/$(basename $(pwd)) ."
-      args:
-        chdir: "{{ zuul.project.src_dir }}"
+    - include_tasks: docker-build.yaml
+      loop: "{{ zuul.projects.values() | list }}"

@@ -1,0 +1,20 @@
+- name: Debug
+  debug:
+    msg: "Processing {{ item.short_name }}"
+
+- name: Check if we have a Dockerfile
+  stat:
+    path: "{{ ansible_env.HOME }}/{{ item.src_dir }}/Dockerfile"
+  register: dockerfile
+
+- name: Build a docker image
+  shell: "docker build -t wazopbx/$(basename $(pwd)) ."
+  args:
+    chdir: "{{ ansible_env.HOME }}/{{ item.src_dir }}"
+  when: dockerfile.stat.exists
+
+- name: Build docker images using make
+  shell: "set -x; if ls Dockerfile* || ls */Dockerfile*; then make; fi"
+  args:
+    chdir: "{{ ansible_env.HOME }}/{{ item.src_dir }}"
+  when: not dockerfile.stat.exists
