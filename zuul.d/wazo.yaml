@@ -130,6 +130,10 @@
       jobs:
         - wazo-tox-py37:
             nodeset: runc-debian-buster
+    auto-merge:
+      jobs:
+        - wazo-tox-py37:
+            nodeset: runc-debian-buster
 
 - project-template:
     name: wazo-tox-py35
@@ -139,6 +143,10 @@
         - wazo-tox-py35:
             nodeset: runc-debian-stretch
     gate:
+      jobs:
+        - wazo-tox-py35:
+            nodeset: runc-debian-stretch
+    auto-merge:
       jobs:
         - wazo-tox-py35:
             nodeset: runc-debian-stretch
@@ -170,6 +178,10 @@
       jobs:
         - wazo-tox-py27:
             nodeset: runc-debian-stretch
+    auto-merge:
+      jobs:
+        - wazo-tox-py27:
+            nodeset: runc-debian-stretch
 
 - project-template:
     name: wazo-tox-integration
@@ -195,6 +207,10 @@
         - wazo-tox-molecule:
             nodeset: debian10-vm
     gate:
+      jobs:
+        - wazo-tox-molecule:
+            nodeset: debian10-vm
+    auto-merge:
       jobs:
         - wazo-tox-molecule:
             nodeset: debian10-vm
@@ -283,6 +299,10 @@
         - yarn-build:
             nodeset: runc-debian-buster
     gate:
+      jobs:
+        - yarn-build:
+            nodeset: runc-debian-buster
+    auto-merge:
       jobs:
         - yarn-build:
             nodeset: runc-debian-buster
