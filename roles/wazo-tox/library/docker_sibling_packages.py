@@ -8,6 +8,16 @@ import yaml
 from ansible.module_utils.basic import AnsibleModule
 
 
+def get_package_name(tox_python, root):
+    subprocess.check_output(
+        [os.path.abspath(tox_python), 'setup.py', 'egg_info'],
+        cwd=os.path.abspath(root))
+    top_level = glob.glob(
+        "{}/*.egg-info/top_level.txt".format(root))[0]
+    with open(top_level) as f:
+        return f.read().strip()
+
+
 def main():
     module = AnsibleModule(
         argument_spec=dict(
@@ -30,23 +40,27 @@ def main():
                                 "skipping docker compose customisation"))
     tox_python = '{envdir}/bin/python'.format(envdir=envdir)
 
+    if not services:
+        package_name = get_package_name(tox_python, project_dir)
+        if package_name.startswith("wazo_"):
+            package_name = package_name[5:]
+        services = [package_name]
+
     volumes = set()
     for project in projects:
         root = project['src_dir']
-        if os.path.exists('setup.py'):
-            subprocess.check_output(
-                [os.path.abspath(tox_python), 'setup.py', 'egg_info'],
-                cwd=os.path.abspath(root))
-            top_level = glob.glob(
-                "{}/*.egg-info/top_level.txt".format(root))[0]
-            with open(top_level) as f:
-                package = f.read().strip()
 
-            volumes.add(
-                "{root}/{package}:"
-                "/usr/local/lib/python3.7/site-packages/{package}".format(
-                    root=os.path.realpath(root), package=package
-                ))
+        if root == project_dir:
+            continue
+        elif not os.path.exists(os.path.join(root, 'setup.py')):
+            continue
+
+        package = get_package_name(tox_python, root)
+        volumes.add(
+            "{root}/{package}:"
+            "/usr/local/lib/python3.7/site-packages/{package}".format(
+                root=os.path.realpath(root), package=package
+            ))
 
     version = '3'
     compose_file = (
