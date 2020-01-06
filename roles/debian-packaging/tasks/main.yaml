@@ -35,7 +35,7 @@
   register: debian_tests_control
 
 - name: Run the tests
-  shell: "autopkgtest $PWD -- null"
+  shell: "autopkgtest --env=SRCDIR=$PWD $PWD -- null"
   become: yes
   when: debian_tests_control.stat.exists
   args:
