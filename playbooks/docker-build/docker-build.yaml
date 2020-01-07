@@ -8,13 +8,13 @@
   register: dockerfile
 
 - name: Build a docker image
-  shell: "docker build -t wazopbx/$(basename $(pwd)) ."
+  shell: "{% raw %}docker image inspect --format='{{ .Id }}' wazopbx/$(basename $(pwd)) || docker build -t wazopbx/$(basename $(pwd)) .{% endraw %}"
   args:
     chdir: "{{ ansible_env.HOME }}/{{ item.src_dir }}"
   when: dockerfile.stat.exists
 
 - name: Build docker images using make
-  shell: "set -x; if ls Dockerfile* || ls */Dockerfile*; then make; fi"
+  shell: "set -x; if [ -f Makefile -a -n \"$(find . -name 'Dockerfile*' | grep -Fv integration_tests)\" ]; then make; fi"
   args:
     chdir: "{{ ansible_env.HOME }}/{{ item.src_dir }}"
   when: not dockerfile.stat.exists
