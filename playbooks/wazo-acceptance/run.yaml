@@ -23,7 +23,7 @@
             xivo_test_helpers: True
           instances:
             default:
-              wazo_host: "{{ ansible_default_ipv4.address }}"
+              wazo_host: "{{ ansible_docker0.ipv4.address }}"
 
     - name: Setup acceptance tests
       shell: "tox -e setup"
