@@ -6,6 +6,7 @@
       - 'dirmngr'
       - 'build-essential'
       - 'autopkgtest'
+      - 'piuparts'
     update_cache: true
     state: present
   vars:
@@ -32,7 +33,19 @@
 - include_tasks: build-package.yaml
   loop: "{{ zuul.projects.values() | list }}"
 
+- name: Check if we have built Debian packages
+  stat:
+    path: "{{ zuul.project.src_dir }}/../pkgs"
+  register: pkgs
+
 - name: Create Packages file
-  shell: "dpkg-scanpackages . > Packages"
+  shell: "mv pkgs/*.deb .; dpkg-scanpackages . > Packages"
   args:
     chdir: "{{ zuul.project.src_dir }}/.."
+  when: pkgs.stat.exists
+
+- name: Add the repository to apt config
+  apt_repository:
+    repo: deb file://{{ zuul.project.src_dir }}/.. ./
+    state: present
+  when: pkgs.stat.exists

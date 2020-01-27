@@ -103,6 +103,33 @@
     run: playbooks/wazo-acceptance/run.yaml
     post-run: playbooks/wazo-acceptance/fetch-logs.yaml
 
+- job:
+    name: wazo-ansible-uc-job
+    description: Install Wazo Platform UC use case
+    timeout: 10800
+    pre-run: playbooks/wazo-ansible/pre.yaml
+    run: playbooks/wazo-ansible/run.yaml
+    post-run: playbooks/wazo-ansible/fetch-logs.yaml
+    vars:
+      wazo_debian_repo: main
+      wazo_distribution: wazo-dev-buster
+
+- project-template:
+    name: wazo-ansible-uc-template
+    description: Project template to test the UC installer
+    check:
+      jobs:
+        - wazo-ansible-uc-job:
+            nodeset: debian10-vm
+            required-projects:
+              wazo-platform/xivo-ci
+    gate:
+      jobs:
+        - wazo-ansible-uc-job:
+            nodeset: debian10-vm
+            required-projects:
+              wazo-platform/xivo-ci
+
 - project-template:
     name: wazo-tox-py37-vm
     description: Project template for tox -e py37
