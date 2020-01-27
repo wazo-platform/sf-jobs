@@ -1,0 +1,61 @@
+- name: Debug
+  debug:
+    msg: "Processing {{ item.short_name }}"
+
+- name: Check if we have a Debian package source tree
+  stat:
+    path: "{{ ansible_env.HOME }}/{{ item.src_dir }}/debian/rules"
+  register: debian_pkg
+
+- name: Build block
+  block:
+    - name: Install build dependencies
+      become: yes
+      command: mk-build-deps --install --remove --tool='env DEBIAN_FRONTEND=noninteractive apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' debian/control
+      vars:
+        DEBIAN_FRONTEND: noninteractive
+      args:
+        chdir: "{{ zuul.project.src_dir }}"
+
+    - name: Download orig sources if needed or update changelog
+      shell: "if grep -q get-orig-source debian/rules; then debian/rules get-orig-source; tar xvf ../*.tar* --strip 1 --exclude 'debian/*'; else dch -b -v $(../xivo-ci/bin/wazo-package-version $(wget -q -O - http://mirror.wazo.community/version/unstable)) --distribution $distribution --force-distribution \"$(git log -1 HEAD --pretty=format:%s)\"; fi"
+      args:
+        chdir: "{{ ansible_env.HOME }}/{{ item.src_dir }}"
+
+    - name: Build debian packages
+      shell: "debuild -d --no-tgz-check --no-lintian --preserve-envvar=MAKEFLAGS --preserve-envvar=PATH -us -uc -ui --no-sign"
+      args:
+        chdir: "{{ ansible_env.HOME }}/{{ item.src_dir }}"
+    
+    - name: Validate versions
+      shell: "/tmp/check-versions.sh {{ ansible_env.HOME }}/{{ item.src_dir }}/.."
+      when: debian_pkg.stat.exists
+    
+    - name: Install packages
+      shell: "env DEBIAN_FRONTEND=noninteractive apt install -y ../*.deb"
+      become: yes
+      args:
+        chdir: "{{ ansible_env.HOME }}/{{ item.src_dir }}"
+    
+    - name: List content of debian packages
+      shell: "for p in $(ls *.deb); do echo \"=== $p ===\"; dpkg -c $p; done"
+      args:
+        chdir: "{{ ansible_env.HOME }}/{{ item.src_dir }}/.."
+    
+    - name: Run Lintian
+      shell: "lintian *.deb"
+      args:
+        chdir: "{{ ansible_env.HOME }}/{{ item.src_dir }}/.."
+    
+    - name: Check if there are tests to run
+      stat:
+        path: "{{ ansible_env.HOME }}/{{ item.src_dir }}/debian/tests/control"
+      register: debian_tests_control
+    
+    - name: Run the tests
+      shell: "autopkgtest --env=SRCDIR=$PWD $PWD -- null"
+      become: yes
+      args:
+        chdir: "{{ ansible_env.HOME }}/{{ item.src_dir }}"
+      when: debian_tests_control.stat.exists
+  when: debian_pkg.stat.exists and (item.short_name != 'xivo-ci' or zuul.project.short_name == 'xivo-ci')

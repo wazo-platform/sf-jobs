@@ -1,12 +1,27 @@
-- name: Download orig sources if needed or update changelog
-  shell: "if grep -q get-orig-source debian/rules; then debian/rules get-orig-source; tar xvf ../*.tar* --strip 1 --exclude 'debian/*'; else dch -b -v $(../xivo-ci/bin/wazo-package-version $(wget -q -O - http://mirror.wazo.community/version/unstable)) --distribution $distribution --force-distribution \"$(git log -1 HEAD --pretty=format:%s)\"; fi"
-  args:
-    chdir: "{{ zuul.project.src_dir }}"
+- name: Install build essential packages
+  become: yes
+  apt:
+    name:
+      - 'devscripts'
+      - 'dirmngr'
+      - 'build-essential'
+      - 'autopkgtest'
+    update_cache: true
+    state: present
+  vars:
+    DEBIAN_FRONTEND: noninteractive
 
-- name: Build debian packages
-  shell: "debuild -d --no-tgz-check --no-lintian --preserve-envvar=MAKEFLAGS --preserve-envvar=PATH -us -uc -ui --no-sign"
-  args:
-    chdir: "{{ zuul.project.src_dir }}"
+- name: Import Wazo gpg key
+  become: yes
+  apt_key:
+    keyserver: hkp://keys.gnupg.net
+    id: 3F1BF7FC527FBC6A
+
+- name: Configure Wazo dev repository
+  become: yes
+  apt_repository:
+    repo: deb http://mirror.wazo.community/debian/ wazo-dev-buster main
+    state: present
 
 - name: Copy script to validate versions
   copy:
@@ -14,38 +29,10 @@
     dest: /tmp/check-versions.sh
     mode: 0755
 
-- name: Validate versions
-  shell: "/tmp/check-versions.sh {{ zuul.project.src_dir }}/.."
-
-- name: Install packages
-  shell: "apt install -y ../*.deb"
-  become: yes
-  args:
-    chdir: "{{ zuul.project.src_dir }}"
-
-- name: List content of debian packages
-  shell: "for p in $(ls *.deb); do echo \"=== $p ===\"; dpkg -c $p; done"
-  args:
-    chdir: "{{ zuul.project.src_dir }}/.."
-
-- name: Run Lintian
-  shell: "lintian *.deb"
-  args:
-    chdir: "{{ zuul.project.src_dir }}/.."
+- include_tasks: build-package.yaml
+  loop: "{{ zuul.projects.values() | list }}"
 
 - name: Create Packages file
   shell: "dpkg-scanpackages . > Packages"
   args:
     chdir: "{{ zuul.project.src_dir }}/.."
-
-- name: Check if there are tests to run
-  stat:
-    path: "{{ zuul.project.src_dir }}/debian/tests/control"
-  register: debian_tests_control
-
-- name: Run the tests
-  shell: "autopkgtest --env=SRCDIR=$PWD $PWD -- null"
-  become: yes
-  when: debian_tests_control.stat.exists
-  args:
-    chdir: "{{ zuul.project.src_dir }}"

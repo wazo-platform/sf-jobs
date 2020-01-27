@@ -1,5 +1,0 @@
-- hosts: all
-  tasks:
-    - name: Install build binary dependencies
-      include_role:
-        name: install-builddep
