@@ -98,6 +98,7 @@
     required-projects:
       - wazo-platform/wazo-ansible
       - wazo-platform/wazo-acceptance
+      - wazo-platform/xivo-ci
     timeout: 10800
     pre-run: playbooks/wazo-acceptance/pre.yaml
     run: playbooks/wazo-acceptance/run.yaml
@@ -113,6 +114,8 @@
     vars:
       wazo_debian_repo: main
       wazo_distribution: wazo-dev-buster
+    required-projects:
+      wazo-platform/xivo-ci
 
 - project-template:
     name: wazo-ansible-uc-template
@@ -121,14 +124,10 @@
       jobs:
         - wazo-ansible-uc-job:
             nodeset: debian10-vm
-            required-projects:
-              wazo-platform/xivo-ci
     gate:
       jobs:
         - wazo-ansible-uc-job:
             nodeset: debian10-vm
-            required-projects:
-              wazo-platform/xivo-ci
 
 - project-template:
     name: wazo-tox-py37-vm

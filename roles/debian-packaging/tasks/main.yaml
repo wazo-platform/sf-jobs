@@ -6,7 +6,7 @@
       - 'dirmngr'
       - 'build-essential'
       - 'autopkgtest'
-      - 'piuparts'
+      # - 'piuparts'
     update_cache: true
     state: present
   vars:
@@ -39,13 +39,14 @@
   register: pkgs
 
 - name: Create Packages file
-  shell: "mv pkgs/*.deb .; dpkg-scanpackages . > Packages"
+  shell: "set -x; mv pkgs/*.deb .; dpkg-scanpackages . > Packages"
   args:
     chdir: "{{ zuul.project.src_dir }}/.."
-  when: pkgs.stat.exists
+  when: pkgs.stat.isdir is defined and pkgs.stat.isdir
 
 - name: Add the repository to apt config
   apt_repository:
-    repo: deb file://{{ zuul.project.src_dir }}/.. ./
+    repo: deb [trusted=yes] file://{{ ansible_env.HOME }}/{{ zuul.project.src_dir }}/.. ./
     state: present
-  when: pkgs.stat.exists
+  become: yes
+  when: pkgs.stat.isdir is defined and pkgs.stat.isdir

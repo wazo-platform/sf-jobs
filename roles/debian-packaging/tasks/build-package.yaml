@@ -63,9 +63,6 @@
       when: debian_tests_control.stat.exists
 
     - name: Archive packages
-      shell: "mkdir -p {{ zuul.project.src_dir }}/../debs; mv ../*.deb {{ zuul.project.src_dir }}/../debs"
-      become: yes
-      args:
-        chdir: "{{ ansible_env.HOME }}/{{ item.src_dir }}"
+      shell: "set -x; mkdir -p {{ zuul.project.src_dir }}/../pkgs; mv {{ ansible_env.HOME }}/{{ item.src_dir }}/../*.deb {{ zuul.project.src_dir }}/../pkgs"
 
   when: debian_pkg.stat.exists and (item.short_name != 'xivo-ci' or zuul.project.short_name == 'xivo-ci')
