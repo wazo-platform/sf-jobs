@@ -3,9 +3,9 @@
   tasks:
     - name: Install Ansible
       become: yes
-      apt: name={{ item }} state=installed
-      with_items:
-        - ansible
+      apt:
+        name: ansible
+        state: present
 
     - name: Install postgresql ansible module from galaxy # noqa 301
       become: yes
