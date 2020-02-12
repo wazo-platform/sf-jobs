@@ -32,14 +32,6 @@
       shell: "/tmp/check-versions.sh {{ ansible_env.HOME }}/{{ item.src_dir }}/.."
       when: debian_pkg.stat.exists
 
-    - name: Install packages
-      # shell: "piuparts -d buster --allow-database --warn-on-debsums-errors --extra-repo='deb [trusted=yes] http://mirror.wazo.community/debian/ wazo-dev-buster main' ../*.deb"
-      shell: "env DEBIAN_FRONTEND=noninteractive apt install -y ../*.deb"
-      become: yes
-      args:
-        chdir: "{{ ansible_env.HOME }}/{{ item.src_dir }}"
-      when: do_not_install_packages_after_build is not defined
-
     - name: List content of debian packages
       shell: "for p in $(ls *.deb); do echo \"=== $p ===\"; dpkg -c $p; done"
       args:

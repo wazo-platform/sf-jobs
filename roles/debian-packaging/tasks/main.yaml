@@ -6,6 +6,7 @@
       - 'dirmngr'
       - 'build-essential'
       - 'autopkgtest'
+      - 'aptitude'
       # - 'piuparts'
     update_cache: true
     state: present
@@ -50,3 +51,12 @@
     state: present
   become: yes
   when: pkgs.stat.isdir is defined and pkgs.stat.isdir
+
+- name: Install packages
+  # shell: "piuparts -d buster --allow-database --warn-on-debsums-errors --extra-repo='deb [trusted=yes] http://mirror.wazo.community/debian/ wazo-dev-buster main' ../*.deb"
+  shell: "env DEBIAN_FRONTEND=noninteractive aptitude install -y $(for p in ../*.deb; do dpkg-deb -f $p Package; done)"
+  become: yes
+  args:
+    chdir: "{{ zuul.project.src_dir }}"
+  when: do_not_install_packages_after_build is not defined and pkgs.stat.isdir is defined and pkgs.stat.isdir
+
