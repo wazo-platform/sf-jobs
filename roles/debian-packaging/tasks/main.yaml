@@ -53,10 +53,12 @@
   when: pkgs.stat.isdir is defined and pkgs.stat.isdir
 
 - name: Install packages
-  # shell: "piuparts -d buster --allow-database --warn-on-debsums-errors --extra-repo='deb [trusted=yes] http://mirror.wazo.community/debian/ wazo-dev-buster main' ../*.deb"
-  shell: "env DEBIAN_FRONTEND=noninteractive aptitude install -y $(for p in ../*.deb; do dpkg-deb -f $p Package; done)"
+  # Use aptitude as it handles better the conflicts than apt but we
+  # need to check that the packages are really installed after the
+  # command as aptitude can be successful without installing anything
+  # (i.e. with a non-existing dependency).
+  shell: "set -x; pkgs=\"$(for p in ../*.deb; do dpkg-deb -f $p Package; done)\" && env DEBIAN_FRONTEND=noninteractive aptitude install -y $pkgs && dpkg -l $pkgs"
   become: yes
   args:
     chdir: "{{ zuul.project.src_dir }}"
   when: do_not_install_packages_after_build is not defined and pkgs.stat.isdir is defined and pkgs.stat.isdir
-
