@@ -48,13 +48,13 @@
       register: debian_tests_control
 
     - name: Run the tests
-      shell: "autopkgtest --env=SRCDIR=$PWD $PWD -- null"
+      shell: "autopkgtest -B --env=SRCDIR=$PWD ../*.changes -- null"
       become: yes
       args:
         chdir: "{{ ansible_env.HOME }}/{{ item.src_dir }}"
       when: debian_tests_control.stat.exists
 
     - name: Archive packages
-      shell: "set -x; mkdir -p {{ zuul.project.src_dir }}/../pkgs; mv {{ ansible_env.HOME }}/{{ item.src_dir }}/../*.deb {{ zuul.project.src_dir }}/../pkgs"
+      shell: "set -x; mkdir -p {{ zuul.project.src_dir }}/../pkgs; mv {{ ansible_env.HOME }}/{{ item.src_dir }}/../*.{dsc,changes,deb} {{ zuul.project.src_dir }}/../pkgs"
 
   when: debian_pkg.stat.exists and (item.short_name != 'xivo-ci' or zuul.project.short_name == 'xivo-ci')
