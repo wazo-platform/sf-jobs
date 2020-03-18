@@ -6,7 +6,7 @@
     - name: Upload debian packages
       become: yes
       synchronize:
-        src: "{{ zuul.project.src_dir }}/../{Packages,*.deb}"
+        src: "{{ zuul.project.src_dir }}/../pkgs/{Packages,*.deb}"
         dest: '{{ zuul.executor.log_root }}/debian/'
         mode: pull
         recursive: false
