@@ -1,6 +1,30 @@
 ---
 - hosts: all
   tasks:
+    - name: Launch the containers in AIO config
+      command: "docker-compose -f docker-compose-aio.yaml up -d"
+      args:
+        chdir: "{{ zuul.project.src_dir }}/../wazo-c4"
+
+    - name: Check that sbc is listed in Consul services (aio)
+      shell: "docker-compose exec -T consul consul catalog services|grep '^sbc$'"
+      args:
+        chdir: "{{ zuul.project.src_dir }}/../wazo-c4"
+      register: result_sbc
+      until: result_sbc.rc == 0
+      retries: 6
+      delay: 10
+
+    - name: Run tests (aio)
+      shell: "docker-compose exec -T wazo-tester pytest -v -k \" not router and not failover\" /tests/"
+      args:
+        chdir: "{{ zuul.project.src_dir }}/../wazo-c4"
+
+    - name: Stop the containers (aio)
+      command: "docker-compose -f docker-compose.yaml down"
+      args:
+        chdir: "{{ zuul.project.src_dir }}/../wazo-c4"
+
     - name: Launch the containers
       command: "docker-compose -f docker-compose.yaml up -d"
       args:
@@ -48,6 +72,12 @@
         chdir: "{{ zuul.project.src_dir }}/../wazo-c4"
 
     - name: Run tests
-      shell: "docker exec wazo-c4_wazo-tester_1 pytest /tests/"
+      shell: "docker-compose exec -T wazo-tester pytest -v /tests/"
       args:
         chdir: "{{ zuul.project.src_dir }}/../wazo-c4"
+
+    - name: Stop the containers
+      command: "docker-compose -f docker-compose.yaml down"
+      args:
+        chdir: "{{ zuul.project.src_dir }}/../wazo-c4"
+
