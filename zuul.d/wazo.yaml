@@ -316,6 +316,12 @@
             nodeset: debian10-vm
             required-projects:
               wazo-platform/xivo-ci
+    experimental:
+      jobs:
+        - wazo-ansible-uc-job:
+            nodeset: debian10-vm
+            required-projects:
+              wazo-platform/wazo-ansible
 
 - project-template:
     name: yarn-template

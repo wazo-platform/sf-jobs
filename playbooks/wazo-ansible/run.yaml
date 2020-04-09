@@ -8,7 +8,7 @@
     - name: Activate uc-ui in inventory
       become: yes
       blockinfile:
-        path: "{{ zuul.project.src_dir }}/inventories/uc-engine"
+        path: "{{ zuul.project.src_dir }}/../wazo-ansible/inventories/uc-engine"
         marker: "# Uncomment the 2 following lines if you want to deploy wazo-ui too:"
         block: |
           [uc-ui:children]
@@ -25,13 +25,11 @@
           --extra-vars engine_api_root_password=secret
           --extra-vars wazo_locale=en_US.UTF-8
       args:
-        chdir: "{{ zuul.project.src_dir }}"
+        chdir: "{{ zuul.project.src_dir }}/../wazo-ansible"
 
     - name: Check packages # noqa 301 303
       become: yes
       command: "apt-get install -fs -qq"
-      args:
-        chdir: "{{ zuul.project.src_dir }}"
 
     - name: Check services # noqa 301
       become: yes
@@ -47,7 +45,7 @@
           --extra-vars engine_api_configure_wizard=true
           --extra-vars engine_api_root_password=secret
       args:
-        chdir: "{{ zuul.project.src_dir }}"
+        chdir: "{{ zuul.project.src_dir }}/../wazo-ansible"
 
     - name: Get service facts
       become: yes
