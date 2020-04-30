@@ -11,8 +11,8 @@
         path: "{{ zuul.project.src_dir }}/../wazo-ansible/inventories/uc-engine"
         marker: "# Uncomment the 2 following lines if you want to deploy wazo-ui too:"
         block: |
-          [uc-ui:children]
-          uc-engine-host
+          [uc_ui:children]
+          uc_engine_host
 
     - name: Run the installation script # noqa 301
       become: yes
