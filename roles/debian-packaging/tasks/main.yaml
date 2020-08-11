@@ -16,8 +16,8 @@
 - name: Import Wazo gpg key
   become: yes
   apt_key:
-    keyserver: hkp://keys.gnupg.net
-    id: 3F1BF7FC527FBC6A
+    url: http://mirror.wazo.community/wazo_current.key
+    id: 2769B67EDBFF423F6874D7663F1BF7FC527FBC6A
 
 - name: Configure Wazo dev repository
   become: yes
