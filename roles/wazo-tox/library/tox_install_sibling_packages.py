@@ -115,9 +115,10 @@ def get_installed_packages(tox_python):
     # Matches strings of the form:
     # 1. '<package_name>==<version>'
     # 2. '# Editable Git install with no remote (<package_name>==<version>)'
+    # 3. '<package_name> @ git remote' as happens in Python 3.7.3
     # both results: <package_name>
-    return [x[x.find('(') + 1:].split('==')[0]
-            for x in frozen_pkgs.split('\n') if '==' in x]
+    return [x[:x.find(' @ ')][x.find('(') + 1:].split('==')[0]
+            for x in frozen_pkgs.split('\n') if '==' in x or ' @ ' in x]
 
 
 def write_new_constraints_file(constraints, packages):
