@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# Copyright 2017-2019 The Wazo Authors  (see the AUTHORS file)
+# Copyright 2017-2020 The Wazo Authors  (see the AUTHORS file)
 #
 # This module is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -167,8 +167,11 @@ def main():
     project_dir = module.params['project_dir']
     projects = module.params['projects']
 
-    if not os.path.exists(os.path.join(project_dir, 'setup.cfg')):
-        module.exit_json(changed=False, msg="No setup.cfg, no action needed")
+    setup_cfg_exists = os.path.exists(os.path.join(project_dir, 'setup.cfg'))
+    setup_py_exists = os.path.exists(os.path.join(project_dir, 'setup.py'))
+    if not setup_cfg_exists and not setup_py_exists:
+        msg = "No setup.cfg or setup.py, no action needed"
+        module.exit_json(changed=False, msg=msg)
     if constraints and not os.path.exists(constraints):
         module.fail_json(msg="Constraints file {constraints} was not found")
 

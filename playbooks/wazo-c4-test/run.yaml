@@ -80,4 +80,3 @@
       command: "docker-compose -f docker-compose.yaml down"
       args:
         chdir: "{{ zuul.project.src_dir }}/../wazo-c4"
-
