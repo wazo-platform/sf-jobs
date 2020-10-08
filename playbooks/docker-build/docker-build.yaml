@@ -8,7 +8,7 @@
   register: dockerfile
 
 - name: Build a docker image
-  shell: "{% raw %}docker image inspect --format='{{ .Id }}' wazopbx/$(basename $(pwd)) || docker build -t wazopbx/$(basename $(pwd)) .{% endraw %}"
+  shell: "{% raw %}docker image inspect --format='{{ .Id }}' wazoplatform/$(basename $(pwd)) || docker build -t wazoplatform/$(basename $(pwd)) .{% endraw %}"
   args:
     chdir: "{{ ansible_env.HOME }}/{{ item.src_dir }}"
   when: dockerfile.stat.exists
